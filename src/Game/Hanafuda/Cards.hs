@@ -2,7 +2,7 @@ module Game.Hanafuda.Cards
     ( Suit(..)
     , Ribbon(..), Animal(..), Light(..)
     , Month
-    , Card
+    , Card(..)
     , cardMonth, cardSuit
     , deck
     ) where
