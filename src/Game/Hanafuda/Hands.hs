@@ -132,8 +132,8 @@ kasu capturedCard = do
 
 anyHint :: CapturedCard -> Int -> Maybe Score
 anyHint capturedCard n =
-    if capturedCard /= []
-       then Just $ if length capturedCard >= n then 1 + length capturedCard - n else 0
+    if length capturedCard >= n
+       then Just $ 1 + length capturedCard - n
        else Nothing
 
 specificHint :: CapturedCard -> [Card] -> Score -> Maybe Score
