@@ -1,5 +1,6 @@
 module Game.Hanafuda.Hands
     ( HanafudaHand(..)
+    , hanafudaHand
     , goko
     , ameshiko
     , shiko
@@ -14,6 +15,7 @@ module Game.Hanafuda.Hands
     , kasu
     ) where
 
+import Data.Maybe
 import Game.Hanafuda.Cards
 
 data HanafudaHand
@@ -33,6 +35,26 @@ data HanafudaHand
 
 type CapturedCard = [Card]  -- 獲得札
 type Score = Int            -- 得点
+
+hanafudaHand :: CapturedCard -> [(HanafudaHand, Score)]
+hanafudaHand capturedCard =
+    mapMaybe ($ capturedCard) hands
+    where
+        hands :: [CapturedCard -> Maybe (HanafudaHand, Score)]
+        hands =
+            [ goko
+            , ameshiko
+            , shiko
+            , sanko
+            , inoshikacho
+            , akatan
+            , aotan
+            , tsukimizake
+            , hanamizake
+            , tanzaku
+            , tane
+            , kasu
+            ]
 
 goko :: CapturedCard -> Maybe (HanafudaHand, Score)
 goko capturedCard = do
