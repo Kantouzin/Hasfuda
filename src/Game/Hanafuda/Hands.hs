@@ -1,5 +1,6 @@
 module Game.Hanafuda.Hands
-    ( goko
+    ( HanafudaHand(..)
+    , goko
     , ameshiko
     , shiko
     , sanko
@@ -15,102 +16,117 @@ module Game.Hanafuda.Hands
 
 import Game.Hanafuda.Cards
 
+data HanafudaHand
+    = Goko          -- 五光
+    | AmeShiko      -- 雨四光
+    | Shiko         -- 四光
+    | Sanko         -- 三光
+    | Inoshikacho   -- 猪鹿蝶
+    | Akatan        -- 赤短
+    | Aotan         -- 青短
+    | TsukimiZake   -- 月見酒
+    | HanamiZake    -- 花見酒
+    | Tanzaku       -- 短冊
+    | Tane          -- タネ
+    | Kasu          -- カス
+    deriving (Show, Eq, Ord, Enum)
+
 type CapturedCard = [Card]  -- 獲得札
 type Score = Int            -- 得点
 
-goko :: CapturedCard -> Maybe Score
+goko :: CapturedCard -> Maybe (HanafudaHand, Score)
 goko capturedCard = do
     score <- if isGoko then Just 10 else Nothing
-    return score
+    return (Goko, score)
     where
         cards = [ card | card@(Card _ (Light _)) <- capturedCard]
         isGoko = length cards == 5
 
-ameshiko :: CapturedCard -> Maybe Score
+ameshiko :: CapturedCard -> Maybe (HanafudaHand, Score)
 ameshiko capturedCard = do
     score <- if isAmeshiko then Just 8 else Nothing
-    return score
+    return (AmeShiko, score)
     where
         cards = [ card | card@(Card _ (Light _)) <- capturedCard]
         isAmeshiko = length cards == 4 && Card 11 (Light Michikaze) `elem` cards
 
-shiko :: CapturedCard -> Maybe Score
+shiko :: CapturedCard -> Maybe (HanafudaHand, Score)
 shiko capturedCard = do
     score <- if isShiko then Just 7 else Nothing
-    return score
+    return (Shiko, score)
     where
         cards = [ card | card@(Card _ (Light _)) <- capturedCard ]
         isShiko = length cards == 4 && Card 11 (Light Michikaze) `notElem` cards
 
-sanko :: CapturedCard -> Maybe Score
+sanko :: CapturedCard -> Maybe (HanafudaHand, Score)
 sanko capturedCard = do
     score <- if isSanko then Just 5 else Nothing
-    return score
+    return (Sanko, score)
     where
         cards = [ card | card@(Card _ (Light _)) <- capturedCard ]
         isSanko = length cards == 3 && Card 11 (Light Michikaze) `notElem` cards
 
-inoshikacho :: CapturedCard -> Maybe Score
+inoshikacho :: CapturedCard -> Maybe (HanafudaHand, Score)
 inoshikacho capturedCard = do
     score <- specificHint capturedCard cards 5
-    return score
+    return (Inoshikacho, score)
     where
         cards = [ Card  6 (Animal Butterflies)
                 , Card  7 (Animal Boar)
                 , Card 10 (Animal Deer) ]
 
-akatan :: CapturedCard -> Maybe Score
+akatan :: CapturedCard -> Maybe (HanafudaHand, Score)
 akatan capturedCard = do
     score <- specificHint capturedCard cards 6
-    return score
+    return (Akatan, score)
     where
         cards = [ Card 1 (Ribbon Poetry)
                 , Card 2 (Ribbon Poetry)
                 , Card 3 (Ribbon Poetry) ]
 
-aotan :: CapturedCard -> Maybe Score
+aotan :: CapturedCard -> Maybe (HanafudaHand, Score)
 aotan capturedCard = do
     score <- specificHint capturedCard cards 6
-    return score
+    return (Aotan, score)
     where
         cards = [ Card  6 (Ribbon Blue)
                 , Card  9 (Ribbon Blue)
                 , Card 10 (Ribbon Blue) ]
 
-tsukimizake :: CapturedCard -> Maybe Score
+tsukimizake :: CapturedCard -> Maybe (HanafudaHand, Score)
 tsukimizake capturedCard = do
     score <- specificHint capturedCard cards 5
-    return score
+    return (TsukimiZake, score)
     where
         cards = [ Card 8 (Light FullMoon)
                 , Card 9 (Animal SakeCup) ]
 
-hanamizake :: CapturedCard -> Maybe Score
+hanamizake :: CapturedCard -> Maybe (HanafudaHand, Score)
 hanamizake capturedCard = do
     score <- specificHint capturedCard cards 5
-    return score
+    return (HanamiZake, score)
     where
         cards = [ Card 3 (Light CampCurtain)
                 , Card 9 (Animal SakeCup) ]
 
-tanzaku :: CapturedCard -> Maybe Score
+tanzaku :: CapturedCard -> Maybe (HanafudaHand, Score)
 tanzaku capturedCard = do
     score <- anyHint cards 5
-    return score
+    return (Tanzaku, score)
     where
         cards = [ card | card@(Card _ (Ribbon _)) <- capturedCard ]
 
-tane :: CapturedCard -> Maybe Score
+tane :: CapturedCard -> Maybe (HanafudaHand, Score)
 tane capturedCard = do
     score <- anyHint cards 5
-    return score
+    return (Tane, score)
     where
         cards = [ card | card@(Card _ (Animal _)) <- capturedCard ]
 
-kasu :: CapturedCard -> Maybe Score
+kasu :: CapturedCard -> Maybe (HanafudaHand, Score)
 kasu capturedCard = do
     score <- anyHint cards 10
-    return score
+    return (Kasu, score)
     where
         cards = [ card | card@(Card _ Dreg) <- capturedCard ]
 
